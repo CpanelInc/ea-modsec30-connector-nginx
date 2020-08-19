@@ -1,0 +1,36 @@
+#!/usr/local/cpanel/3rdparty/bin/perl
+# cpanel - ea-nginx                                Copyright 2019 cPanel, L.L.C.
+#                                                           All rights Reserved.
+# copyright@cpanel.net                                         http://cpanel.net
+# This code is subject to the cPanel license. Unauthorized copying is prohibited
+
+use strict;
+use warnings;
+
+use Template ();
+use Path::Tiny;
+use Cpanel::YAML ();
+
+my $tt = Template->new( { INCLUDE_PATH => "/etc/nginx/" } );
+
+my $output_path = "/etc/nginx/conf.d/modsec/modsec30.cpanel.conf";
+path($output_path)->touchpath;    # just in case
+
+my $output_tt = path("/etc/nginx/ea-nginx/modsec30.cpanel.conf.tt")->slurp;
+my $tt_data   = Cpanel::YAML::LoadFile("/var/cpanel/modsec_cpanel_conf_datastore");
+
+$tt->process(
+    \$output_tt, $tt_data,
+    sub {
+        my ($out) = @_;
+        path($output_path)->spew($out);
+        return 1;
+    }
+);
+
+if ( $tt->error() ) {
+    my $tt_err = $tt->error();
+    path($output_path)->spew("");
+    die "$tt_err\nFailed to ensure “$output_path” does not exist: $!\n" if -e $output_path;
+    die $tt_err;
+}
