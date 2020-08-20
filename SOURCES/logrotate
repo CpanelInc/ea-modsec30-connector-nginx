@@ -1,0 +1,13 @@
+/var/log/nginx/modsec30_audit/*/* {
+        missingok
+        rotate 21
+        compress
+        delaycompress
+        notifempty
+        nodateext
+        postrotate
+                if [ -f /var/run/nginx.pid ]; then
+                        kill -USR1 `cat /var/run/nginx.pid`
+                fi
+        endscript
+}
