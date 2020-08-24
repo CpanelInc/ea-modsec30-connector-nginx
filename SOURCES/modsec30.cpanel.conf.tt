@@ -29,7 +29,7 @@ modsecurity_rules '
 ## ModSecurity configuration file includes:
 ##
 
-[% FOREACH file IN active_configs.keys -%]
+[% FOREACH file IN active_configs.keys.sort -%]
 modsecurity_rules_file "/etc/nginx/conf.d/[% file -%]";
 [% END -%]
 
