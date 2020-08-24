@@ -20,7 +20,11 @@ modsecurity_rules 'SecDataDir "/var/cpanel/modsec30datadir"';
 [% IF settings.size -%]
 modsecurity_rules '
 [% FOREACH directive IN settings.keys.sort -%]
-  [% directive -%] [% settings.$directive %]
+[% IF directive.match('^(?:SecConnEngine|SecDisableBackendCompression)$') -%]
+  # nginx connector does not support [% directive %] (current value: [% settings.$directive %])
+[% ELSE -%]
+  [% directive %] [% settings.$directive %]
+[% END -%]
 [% END -%]
 ';
 [% END -%]
