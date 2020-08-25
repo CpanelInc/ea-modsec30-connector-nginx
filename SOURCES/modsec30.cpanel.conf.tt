@@ -33,6 +33,9 @@ modsecurity_rules '
 ## ModSecurity configuration file includes:
 ##
 
+[% FOREACH vendor IN missing_vendors.keys.sort -%]
+# Leaving out “[% vendor %]” rules: The vendor is installed but is not available for NGINX (i.e. /etc/nginx/conf.d/modsec_vendor_configs/[% vendor %] does not exist).
+[% END -%]
 [% FOREACH file IN active_configs.keys.sort -%]
 modsecurity_rules_file "/etc/nginx/conf.d/[% file -%]";
 [% END -%]
