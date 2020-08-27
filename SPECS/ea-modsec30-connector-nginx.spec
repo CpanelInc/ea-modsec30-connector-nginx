@@ -25,7 +25,7 @@ AutoReq:   no
 
 BuildRequires: ea-modsec30
 
-Requires: ea-nginx >= 1.19.1-9
+Requires: ea-modsec30 ea-nginx >= 1.19.1-9
 
 %description
 
