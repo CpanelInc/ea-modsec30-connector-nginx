@@ -29,6 +29,7 @@ for my $active_config ( keys %{ $tt_data->{active_configs} } ) {
     }
     else {
         warn "!!!! DANGER !! “$active_config” is a mod sec vendor config entry that is not using the mod sec vendor system!\n\tThat is likely to break things so we are ignoring it for NGINX.\n\tPlease report this to the company that provided it and ask them to either use the mod sec vendor config correctly or do not use it at all.\n";
+        delete $tt_data->{active_configs}{$active_config};
     }
 }
 
