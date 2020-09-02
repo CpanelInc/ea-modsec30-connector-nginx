@@ -11,7 +11,13 @@
 ## ModSecurity fixed global configuration directives
 ##
 
-modsecurity_rules 'SecDataDir "/var/cpanel/modsec30datadir"';
+# SecDataDir is not supported under libmodsec per
+#   https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual-(v2.x)#SecDataDir
+#     - Version: 2.0.0-2.9.x
+#     - Supported on libModSecurity: No
+#   If it is ever implemented (unlikely since its a No and not a TBI) then:
+#     ea-modsec-sdbm-util will need updated to be multi-mod-sec aware (e.g. /usr/sbin/modsec-sdbm-util prunes SecDataDir)
+# modsecurity_rules 'SecDataDir "/var/cpanel/modsec30datadir"';
 
 ##
 ## ModSecurity manageable global configuration directives

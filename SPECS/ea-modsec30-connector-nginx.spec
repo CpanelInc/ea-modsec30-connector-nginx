@@ -42,7 +42,6 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/opt/cpanel/ea-modsec30-connector-nginx
 mkdir -p $RPM_BUILD_ROOT/etc/nginx/conf.d/modules
 
-mkdir -p $RPM_BUILD_ROOT/var/cpanel/modsec30datadir
 mkdir -p $RPM_BUILD_ROOT/etc/nginx/conf.d/modsec_vendor_configs
 mkdir -p $RPM_BUILD_ROOT/var/log/nginx/modsec30_audit
 
@@ -73,7 +72,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root, -)
 /opt/cpanel/ea-modsec30-connector-nginx
 /etc/nginx/conf.d/modules/ngx_http_modsecurity_module.conf
-%attr(1770 root nobody) %dir /var/cpanel/modsec30datadir
 %attr(0755 root root) %dir /etc/nginx/conf.d/modsec_vendor_configs
 %attr(1733 root root) %dir /var/log/nginx/modsec30_audit
 
