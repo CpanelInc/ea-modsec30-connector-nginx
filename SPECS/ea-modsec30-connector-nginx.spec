@@ -4,7 +4,7 @@ Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
 Version: 1.0.1
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 1
+%define release_prefix 2
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -87,6 +87,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/logrotate.d/modsec30-connector-nginx
 
 %changelog
+* Wed Sep 02 2020 Daniel Muey <dan@cpanel.net> - 1.0.1-2
+- ZC-7445: Several fixes to log directories
+
 * Tue Aug 18 2020 Daniel Muey <dan@cpanel.net> - 1.0.1-1
 - ZC-7366: initial release
 
