@@ -18,7 +18,6 @@ Source3: modsec30.cpanel.conf
 Source4: modsec30.cpanel.conf-generate
 Source5: modsec30.cpanel.conf.tt
 Source6: modsec30.user.conf
-Source7: logrotate
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReq:   no
@@ -56,11 +55,6 @@ mkdir -p $RPM_BUILD_ROOT/etc/nginx/ea-nginx/config-scripts/global/
 /bin/cp -rf %{SOURCE5} $RPM_BUILD_ROOT/etc/nginx/ea-nginx/modsec30.cpanel.conf.tt
 /bin/cp -rf %{SOURCE6} $RPM_BUILD_ROOT/etc/nginx/conf.d/modsec/modsec30.user.conf
 
-# install log rotation stuff
-%{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-%{__install} -m 644 -p %{SOURCE7} \
-   $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/modsec30-connector-nginx
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -81,8 +75,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0755 root root) /etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
 /etc/nginx/ea-nginx/modsec30.cpanel.conf.tt
 %attr(0600,root,root) %config(noreplace) /etc/nginx/conf.d/modsec/modsec30.user.conf
-
-%config(noreplace) %{_sysconfdir}/logrotate.d/modsec30-connector-nginx
 
 %changelog
 * Wed Sep 02 2020 Daniel Muey <dan@cpanel.net> - 1.0.1-2
