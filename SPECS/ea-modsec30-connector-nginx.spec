@@ -62,6 +62,17 @@ rm -rf $RPM_BUILD_ROOT
 
 /etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
 
+# If the Apache connector is not installed these will be missing
+#   which can cause spurious errors from ULC about not being able to open them.
+# We don't want the NGINX connector to own them because then the
+#   connectors could not be installed at the same time.
+# If they are there and empty (or even not-empty FTM since they won't be `Include`d) they are noops.
+# All of that being the case: we touch them here (and do not remove them uninstall) so that ULC will be happy.
+
+mkdir -p /etc/apache/conf.d/modsec
+touch /etc/apache/conf.d/modsec/modsec2.cpanel.conf
+touch /etc/apache/conf.d/modsec/modsec2.user.conf
+
 %files
 %defattr(-, root, root, -)
 /opt/cpanel/ea-modsec30-connector-nginx
