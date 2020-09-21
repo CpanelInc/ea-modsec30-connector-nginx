@@ -69,9 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 # If they are there and empty (or even not-empty FTM since they won't be `Include`d) they are noops.
 # All of that being the case: we touch them here (and do not remove them uninstall) so that ULC will be happy.
 
-mkdir -p /etc/apache/conf.d/modsec
-touch /etc/apache/conf.d/modsec/modsec2.cpanel.conf
-touch /etc/apache/conf.d/modsec/modsec2.user.conf
+mkdir -p /etc/apache2/conf.d/modsec
+touch /etc/apache2/conf.d/modsec/modsec2.cpanel.conf
+touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 
 %files
 %defattr(-, root, root, -)
