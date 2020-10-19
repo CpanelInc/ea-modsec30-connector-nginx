@@ -22,6 +22,12 @@ my $tt_data   = Cpanel::YAML::LoadFile("/var/cpanel/modsec_cpanel_conf_datastore
 for my $active_config ( keys %{ $tt_data->{active_configs} } ) {
     if ( $active_config =~ m{modsec_vendor_configs/([^/]+)/} ) {
         my $vendor = $1;
+
+        if ( !$tt_data->{active_vendors}{$vendor} ) {
+            delete $tt_data->{active_configs}{$active_config};
+            next;
+        }
+
         if ( !-d "/etc/nginx/conf.d/modsec_vendor_configs/$vendor" ) {
             warn "Mod sec vendor “$vendor” is not setup for NGINX, skipping their rules …\n" if !$tt_data->{missing_vendors}{$vendor}++;
             delete $tt_data->{active_configs}{$active_config};

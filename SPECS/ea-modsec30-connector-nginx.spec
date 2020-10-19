@@ -4,7 +4,7 @@ Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
 Version: 1.0.1
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 3
+%define release_prefix 4
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -88,6 +88,9 @@ touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 %attr(0600,root,root) %config(noreplace) /etc/nginx/conf.d/modsec/modsec30.user.conf
 
 %changelog
+* Mon Oct 19 2020 Daniel Muey <dan@cpanel.net> - 1.0.1-4
+- ZC-7769: factor in that `active_configs` still has the vendor info even if the vendor is disabled per `active_configs`
+
 * Thu Sep 10 2020 Daniel Muey <dan@cpanel.net> - 1.0.1-3
 - ZC-7444: Remove unsupported `SecGsbLookupDb` and `SecGuardianLog` from config
 
