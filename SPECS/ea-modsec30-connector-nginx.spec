@@ -62,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 
 /etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
 
+%posttrans
+
 # If the Apache connector is not installed these will be missing
 #   which can cause spurious errors from ULC about not being able to open them.
 # We don't want the NGINX connector to own them because then the
