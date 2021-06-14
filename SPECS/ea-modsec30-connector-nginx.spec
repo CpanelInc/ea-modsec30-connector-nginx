@@ -2,9 +2,9 @@
 
 Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
-Version: 1.0.1
+Version: 1.0.2
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 5
+%define release_prefix 1
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -90,6 +90,9 @@ touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 %attr(0600,root,root) %config(noreplace) /etc/nginx/conf.d/modsec/modsec30.user.conf
 
 %changelog
+* Mon Jun 14 2021 Cory McIntire <cory@cpanel.net> - 1.0.2-1
+- EA-9863: Update ea-modsec30-connector-nginx from v1.0.1 to v1.0.2
+
 * Wed Mar 17 2021 Tim Mullin <tim@cpanel.net> - 1.0.1-5
 - EA-9421: Set SecRequestBodyLimitAction to ProcessPartial
 
