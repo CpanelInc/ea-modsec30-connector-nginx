@@ -1,0 +1,5 @@
+{
+    "add_to_requires": {
+        "ea-modsec30-connector-nginx": [ "ea-nginx" ]
+    }
+}
