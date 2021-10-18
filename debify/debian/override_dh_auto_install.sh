@@ -16,6 +16,7 @@ mkdir -p $DEB_INSTALL_ROOT/etc/nginx/ea-nginx/config-scripts/global/
 /bin/cp -rf $SOURCE2 $DEB_INSTALL_ROOT/etc/nginx/conf.d/modsec30.conf
 /bin/cp -rf $SOURCE3 $DEB_INSTALL_ROOT/etc/nginx/conf.d/modsec/modsec30.cpanel.conf
 /bin/cp -rf $SOURCE4 $DEB_INSTALL_ROOT/etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
+chmod a+x $DEB_INSTALL_ROOT/etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
 /bin/cp -rf $SOURCE5 $DEB_INSTALL_ROOT/etc/nginx/ea-nginx/modsec30.cpanel.conf.tt
 /bin/cp -rf $SOURCE6 $DEB_INSTALL_ROOT/etc/nginx/conf.d/modsec/modsec30.user.conf
 
