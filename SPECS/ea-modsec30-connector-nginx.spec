@@ -4,7 +4,7 @@ Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
 Version: 1.0.2
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 2
+%define release_prefix 3
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -18,6 +18,8 @@ Source3: modsec30.cpanel.conf
 Source4: modsec30.cpanel.conf-generate
 Source5: modsec30.cpanel.conf.tt
 Source6: modsec30.user.conf
+
+Patch1: 0001-Support-for-building-with-nginx-configured-with-PCRE.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReq:   no
@@ -33,6 +35,8 @@ The ModSecurity-nginx connector is the connection point between
 
 %prep
 %setup -q -n ModSecurity-nginx-%{version}
+
+%patch1 -p1 -b .pcre2support
 
 %build
 
@@ -90,6 +94,9 @@ touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 %attr(0600,root,root) %config(noreplace) /etc/nginx/conf.d/modsec/modsec30.user.conf
 
 %changelog
+* Fri Jan 14 2022 Travis Holloway <t.holloway@cpanel.net> - 1.0.2-3
+- EA-10430: Add patch to support for building with nginx configured with PCRE2
+
 * Thu Dec 16 2021 Dan Muey <dan@cpanel.net> - 1.0.2-2
 - ZC-9203: Update DISABLE_BUILD to match OBS
 
