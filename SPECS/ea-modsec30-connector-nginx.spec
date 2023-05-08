@@ -1,10 +1,8 @@
-%define debug_package %{nil}
-
 Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
 Version: 1.0.3
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 1
+%define release_prefix 2
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -23,8 +21,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReq:   no
 
 BuildRequires: ea-modsec30
+BuildRequires: ea-nginx-ngxdev
 
-Requires: ea-modsec30 ea-nginx >= 1.19.1-9
+Requires: ea-modsec30 ea-nginx >= 1.24.0-3
 
 %description
 
@@ -35,6 +34,17 @@ The ModSecurity-nginx connector is the connection point between
 %setup -q -n ModSecurity-nginx-%{version}
 
 %build
+
+export MODSECURITY_LIB=/opt/cpanel/ea-modsec30/lib
+export MODSECURITY_INC=/opt/cpanel/ea-modsec30/include
+
+# You will be in ./nginx-build after this source()
+#    so that configure and make etc can happen.
+# We probably want to popd back when we are done in there
+. /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
+./configure "${NGINX_CONFIGURE[@]}" --add-dynamic-module=..
+make %{?_smp_mflags}
+popd
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -54,6 +64,9 @@ mkdir -p $RPM_BUILD_ROOT/etc/nginx/ea-nginx/config-scripts/global/
 /bin/cp -rf %{SOURCE4} $RPM_BUILD_ROOT/etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
 /bin/cp -rf %{SOURCE5} $RPM_BUILD_ROOT/etc/nginx/ea-nginx/modsec30.cpanel.conf.tt
 /bin/cp -rf %{SOURCE6} $RPM_BUILD_ROOT/etc/nginx/conf.d/modsec/modsec30.user.conf
+
+mkdir -p %{buildroot}%{_libdir}/nginx/modules
+install ./nginx-build/objs/ngx_http_modsecurity_module.so %{buildroot}%{_libdir}/nginx/modules/ngx_http_modsecurity_module.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -88,8 +101,12 @@ touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 %attr(0755 root root) /etc/nginx/ea-nginx/config-scripts/global/modsec30.cpanel.conf-generate
 /etc/nginx/ea-nginx/modsec30.cpanel.conf.tt
 %attr(0600,root,root) %config(noreplace) /etc/nginx/conf.d/modsec/modsec30.user.conf
+%attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_modsecurity_module.so
 
 %changelog
+* Mon May 08 2023 Dan Muey <dan@cpanel.net> - 1.0.3-2
+- ZC-10395: Build/manage `modules/ngx_http_modsecurity_module.so` and nginx modsec hooks in this pkg
+
 * Mon May 23 2022 Travis Holloway <t.holloway@cpanel.net> - 1.0.3-1
 - EA-10724: Update ea-modsec30-connector-nginx from v1.0.2 to v1.0.3
 
