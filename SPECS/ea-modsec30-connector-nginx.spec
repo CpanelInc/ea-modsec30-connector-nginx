@@ -16,6 +16,7 @@ Source3: modsec30.cpanel.conf
 Source4: modsec30.cpanel.conf-generate
 Source5: modsec30.cpanel.conf.tt
 Source6: modsec30.user.conf
+Source7: Modsec30NginxHooks.pm
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 AutoReq:   no
@@ -65,11 +66,30 @@ mkdir -p $RPM_BUILD_ROOT/etc/nginx/ea-nginx/config-scripts/global/
 /bin/cp -rf %{SOURCE5} $RPM_BUILD_ROOT/etc/nginx/ea-nginx/modsec30.cpanel.conf.tt
 /bin/cp -rf %{SOURCE6} $RPM_BUILD_ROOT/etc/nginx/conf.d/modsec/modsec30.user.conf
 
+mkdir -p $RPM_BUILD_ROOT/var/cpanel/perl5/lib
+%{__install} -p %{SOURCE7} $RPM_BUILD_ROOT/var/cpanel/perl5/lib/Modsec30NginxHooks.pm
+
 mkdir -p %{buildroot}%{_libdir}/nginx/modules
 install ./nginx-build/objs/ngx_http_modsecurity_module.so %{buildroot}%{_libdir}/nginx/modules/ngx_http_modsecurity_module.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%pre
+
+# See ea-nginx SPEC for details
+numhooks=`/usr/local/cpanel/bin/manage_hooks list 2> /dev/null | grep 'hook: Modsec30NginxHooks::' | wc -l`
+if [ "$numhooks" -ge 1 ]; then
+   /usr/local/cpanel/bin/manage_hooks delete module Modsec30NginxHooks
+fi
+
+%preun
+
+# See ea-nginx SPEC for details
+numhooks=`/usr/local/cpanel/bin/manage_hooks list 2> /dev/null | grep 'hook: Modsec30NginxHooks::' | wc -l`
+if [ "$numhooks" -ge 1 ]; then
+    /usr/local/cpanel/bin/manage_hooks delete module Modsec30NginxHooks
+fi
 
 %post
 
@@ -88,12 +108,18 @@ mkdir -p /etc/apache2/conf.d/modsec
 touch /etc/apache2/conf.d/modsec/modsec2.cpanel.conf
 touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 
+# See ea-nginx SPEC for details
+/usr/local/cpanel/bin/manage_hooks prune; /bin/true;
+/usr/local/cpanel/bin/manage_hooks add module Modsec30NginxHooks
+
 %files
 %defattr(-, root, root, -)
 /opt/cpanel/ea-modsec30-connector-nginx
 /etc/nginx/conf.d/modules/ngx_http_modsecurity_module.conf
 %attr(0755 root root) %dir /etc/nginx/conf.d/modsec_vendor_configs
 %attr(1733 root root) %dir /var/log/nginx/modsec30_audit
+
+%attr(0755, root, root) /var/cpanel/perl5/lib/Modsec30NginxHooks.pm
 
 # Don't make modsec30.conf a config file, we need to ensure we own this and can fix as needed
 %attr(0600,root,root) /etc/nginx/conf.d/modsec30.conf
