@@ -9,7 +9,8 @@ package Modsec30NginxHooks;
 use strict;
 use warnings;
 
-use NginxHooks ();
+use NginxHooks    ();
+use Cpanel::Debug ();
 
 sub describe {
     my @modsecurity_category = map {
@@ -21,7 +22,7 @@ sub describe {
             # NOTE: this is an admin bin, but is called on the raised
             # privileges side
 
-            'hook'     => 'NginxHooks::_modsecurity_user',
+            'hook'     => 'Modsec30NginxHooks::_modsecurity_user',
             'exectype' => 'module',
         }
     } (
@@ -92,6 +93,24 @@ sub describe {
     ];
 
     return $hook_ar;
+}
+
+sub _modsecurity_user {
+    my ( $hook, $event ) = @_;
+
+    local $@;
+
+    if ( exists $event->{user} ) {
+        my $cpuser = $event->{user};
+
+        Cpanel::Debug::log_info("_modsecurity_user: adjust_secruleengineoff :$cpuser:");
+        eval {
+            require Cpanel::ServerTasks;
+            Cpanel::ServerTasks::schedule_task( ['NginxTasks'], NginxHooks::get_time_to_wait(0), "rebuild_user $cpuser" );
+        };
+    }
+
+    return $@ ? ( 0, $@ ) : ( 1, "Success" );
 }
 
 1;
