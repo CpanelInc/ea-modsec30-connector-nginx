@@ -1,0 +1,56 @@
+#!/usr/local/cpanel/3rdparty/bin/perl
+# cpanel - ea-nginx                                Copyright 2019 cPanel, L.L.C.
+#                                                           All rights Reserved.
+# copyright@cpanel.net                                         http://cpanel.net
+# This code is subject to the cPanel license. Unauthorized copying is prohibited
+
+use strict;
+use warnings;
+
+use Template ();
+use Path::Tiny;
+use Cpanel::YAML ();
+
+my $tt = Template->new( { INCLUDE_PATH => "/etc/nginx/" } );
+
+my $output_path = "/etc/nginx/conf.d/modsec/modsec30.cpanel.conf";
+path($output_path)->touchpath;    # just in case
+
+my $output_tt = path("/etc/nginx/ea-nginx/modsec30.cpanel.conf.tt")->slurp;
+my $tt_data   = Cpanel::YAML::LoadFile("/var/cpanel/modsec_cpanel_conf_datastore");
+
+for my $active_config ( keys %{ $tt_data->{active_configs} } ) {
+    if ( $active_config =~ m{modsec_vendor_configs/([^/]+)/} ) {
+        my $vendor = $1;
+
+        if ( !$tt_data->{active_vendors}{$vendor} ) {
+            delete $tt_data->{active_configs}{$active_config};
+            next;
+        }
+
+        if ( !-d "/etc/nginx/conf.d/modsec_vendor_configs/$vendor" ) {
+            warn "Mod sec vendor “$vendor” is not setup for NGINX, skipping their rules …\n" if !$tt_data->{missing_vendors}{$vendor}++;
+            delete $tt_data->{active_configs}{$active_config};
+        }
+    }
+    else {
+        warn "!!!! DANGER !! “$active_config” is a mod sec vendor config entry that is not using the mod sec vendor system!\n\tThat is likely to break things so we are ignoring it for NGINX.\n\tPlease report this to the company that provided it and ask them to either use the mod sec vendor config correctly or do not use it at all.\n";
+        delete $tt_data->{active_configs}{$active_config};
+    }
+}
+
+$tt->process(
+    \$output_tt, $tt_data,
+    sub {
+        my ($out) = @_;
+        path($output_path)->spew($out);
+        return 1;
+    }
+);
+
+if ( $tt->error() ) {
+    my $tt_err = $tt->error();
+    path($output_path)->spew("");
+    die "$tt_err\nFailed to ensure “$output_path” does not exist: $!\n" if -e $output_path;
+    die $tt_err;
+}

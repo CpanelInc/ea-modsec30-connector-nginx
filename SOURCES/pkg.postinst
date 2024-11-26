@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if test -x "/usr/bin/apt"; then
+    # No need to restart nginx here since that is handled in the universal-hook
+    /usr/local/cpanel/scripts/ea-nginx config --all --no-reload
+fi
+
