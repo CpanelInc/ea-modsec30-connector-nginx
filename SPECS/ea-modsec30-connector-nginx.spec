@@ -2,7 +2,7 @@ Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
 Version: 1.0.4
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 2
+%define release_prefix 5
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -43,7 +43,7 @@ export MODSECURITY_INC=/opt/cpanel/ea-modsec30/include
 #    so that configure and make etc can happen.
 # We probably want to popd back when we are done in there
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
-./configure "${NGINX_CONFIGURE[@]}" --add-dynamic-module=..
+./auto/configure "${NGINX_CONFIGURE[@]}" --add-dynamic-module=..
 make %{?_smp_mflags}
 popd
 
@@ -130,6 +130,15 @@ touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_modsecurity_module.so
 
 %changelog
+* Wed Feb 04 2026 Cory McIntire <cory.mcintire@webpros.com> - 1.0.4-5
+- EA-13333: Build against ea-nginx version v1.29.5
+
+* Tue Dec 09 2025 Cory McIntire <cory.mcintire@webpros.com> - 1.0.4-4
+- EA-13286: Build against ea-nginx version v1.29.4
+
+* Tue Nov 5 2025 Cory McIntire <cory.mcintire@webpros.com> - 1.0.4-3
+- EA-13235: Build against ea-nginx version v1.29.3
+
 * Wed Aug 13 2025 Dan Muey <daniel.muey@webpros.com> - 1.0.4-2
 - EA-13069: Build against ea-nginx version v1.29.1
 
