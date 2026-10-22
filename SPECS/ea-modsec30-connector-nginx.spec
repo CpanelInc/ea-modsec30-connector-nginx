@@ -2,7 +2,7 @@ Name: ea-modsec30-connector-nginx
 Summary: NGINX connector for ModSecurity v3.0
 Version: 1.0.4
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4544 for more details
-%define release_prefix 17
+%define release_prefix 18
 Release: %{release_prefix}%{?dist}.cpanel
 Vendor: cPanel, Inc.
 Group: System Environment/Libraries
@@ -130,6 +130,9 @@ touch /etc/apache2/conf.d/modsec/modsec2.user.conf
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_modsecurity_module.so
 
 %changelog
+* Thu Oct 22 2026 EA4 Update Bot <cory.mcintire@webpros.com> - 1.0.4-18
+- EA-13617: Build against ea-nginx version v1.31.8
+
 * Thu Oct 15 2026 EA4 Update Bot <cory.mcintire@webpros.com> - 1.0.4-17
 - EA-13600: Build against ea-nginx version v1.31.7
 
